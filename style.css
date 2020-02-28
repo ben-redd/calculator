@@ -1,0 +1,39 @@
+body {
+	height: 100vh;
+}
+button {
+	height: 100px;
+	width: 100px;
+	font-size: 90%;
+	margin: 0;
+	padding: 0;
+}
+
+#container {
+	display: grid;
+	grid-template: repeat(5, 1fr) / repeat(4, 1fr);
+	justify-items: center;
+	align-items: center;
+	background-color: gray;
+	max-width: 500px;
+	max-height: 800px;
+	font-size: 50px;
+	border: 2px solid black;
+	margin: 5% auto;
+}
+
+#display {
+	grid-row: 1 / span 1;
+	grid-column: 1 / span 4;
+	font-size: 90%;
+	margin: 3%;
+	align-self: stretch;
+	justify-self: stretch;
+	outline: none;
+	text-align: end;
+	padding-right: 3%;
+}
+#1 {
+	grid-row: 2 / 3;
+	grid-column: 1 / 2;
+}
