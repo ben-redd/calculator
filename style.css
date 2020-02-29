@@ -1,12 +1,18 @@
 body {
 	height: 100vh;
+	background-image: url(https://images.unsplash.com/photo-1510070009289-b5bc34383727?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80);
 }
 button {
 	height: 100px;
-	width: 100px;
+	width: 100%;
 	font-size: 90%;
 	margin: 0;
 	padding: 0;
+	border-radius: 5%;
+	border: 1px solid black;
+	background: -webkit-gradient(linear, left top, left bottom, from(#6b6b6b), to(#4e4e4e));
+	background: linear-gradient(top, #6b6b6b 0%, #000000);
+	outline: none;
 }
 
 #container {
@@ -14,24 +20,37 @@ button {
 	grid-template: repeat(5, 1fr) / repeat(4, 1fr);
 	justify-items: center;
 	align-items: center;
-	background-color: gray;
+	grid-gap: 2%;
 	max-width: 500px;
-	max-height: 800px;
+	max-height: 1000px;
 	font-size: 50px;
 	border: 2px solid black;
 	margin: 5% auto;
+	margin-top: 20%;
+	padding: 1% 1% 5% 1%;
+	border-radius: 3%;
+	background: -webkit-gradient(linear, left top, left bottom, from(#808080), to(#5c5a5c));
+	background: linear-gradient(top, #808080 0%, #5c5a5c);
 }
 
 #display {
 	grid-row: 1 / span 1;
 	grid-column: 1 / span 4;
 	font-size: 90%;
-	margin: 3%;
 	align-self: stretch;
 	justify-self: stretch;
 	outline: none;
 	text-align: end;
+	background-color: rgb(85, 84, 84);
+	border: none;
+	border-radius: 3%;
 	padding-right: 3%;
+}
+::placeholder {
+	color: black;
+}
+::-ms-input-placeholder {
+	color: black;
 }
 #1 {
 	grid-row: 2 / 3;
