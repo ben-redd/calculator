@@ -1,4 +1,4 @@
-//[]Fix the calculator so it can take multi-digit number inputs such as "35", "200", etc;
+//[x]Fix the calculator so it can take multi-digit number inputs such as "35", "200", etc;
 //[]Round answers with long decimals to fit on the screen
 //[]Add a "." button so users can input decimal numbers
 //[]Add a backspace button so users can undo a miss click without clearing the entire display
@@ -49,26 +49,42 @@ function displayContent(input) {
 	if (input === 'clear') {
 		display.placeholder = '';
 	} else {
-		display.placeholder = display.placeholder + ' ' + String(input);
+		display.placeholder = display.placeholder + String(input);
 	}
 }
 
 const buttons = document.querySelectorAll('button');
 let numbersArray = [];
 let operatorArray = [];
+let buttonsClicked = [];
 for (let i = 0; i < buttons.length; i++) {
 	buttons[i].addEventListener('click', () => {
 		//takes number inputs
 		if (buttons[i].classList.contains('number')) {
-			numbersArray.push(Number(buttons[i].textContent));
-			displayContent(buttons[i].textContent);
+			//this if statement determines if the last input was a number or operator. If it was a number it simply adds to it e.g. lastNum was 3 and the next input is 3 turns into 33.
+			if (buttonsClicked.length > 0 && typeof buttonsClicked[buttonsClicked.length - 1] === 'number') {
+				displayContent(buttons[i].textContent);
+				numbersArray[numbersArray.length - 1] = Number(
+					String(numbersArray[numbersArray.length - 1]) + buttons[i].textContent
+				);
+				buttonsClicked[buttonsClicked.length - 1] = Number(
+					String(buttonsClicked[buttonsClicked.length - 1]) + buttons[i].textContent
+				);
+			} else {
+				numbersArray.push(Number(buttons[i].textContent));
+				buttonsClicked.push(Number(buttons[i].textContent));
+				displayContent(buttons[i].textContent);
+			}
 			//takes operator inputs
 		} else if (buttons[i].classList.contains('operator')) {
 			operatorArray.push(buttons[i].textContent);
-			displayContent(buttons[i].textContent);
+			buttonsClicked.push(buttons[i].textContent);
+			displayContent(' ' + buttons[i].textContent + ' ');
 			//clears the inputs if the clear input is selected
 		} else if (buttons[i].classList.contains('clear')) {
 			numbersArray.length = 0;
+			operatorArray.length = 0;
+			buttonsClicked.length = 0;
 			displayContent('clear');
 		} else if (buttons[i].classList.contains('equals')) {
 			displayContent('clear');
