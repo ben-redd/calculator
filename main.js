@@ -69,6 +69,7 @@ const buttons = document.querySelectorAll('button');
 let numbersArray = [];
 let operatorArray = [];
 let buttonsClicked = [];
+//prettier-ignore
 for (let i = 0; i < buttons.length; i++) {
 	buttons[i].addEventListener('click', () => {
 		//takes number inputs
@@ -87,8 +88,21 @@ for (let i = 0; i < buttons.length; i++) {
 				buttonsClicked.push(Number(buttons[i].textContent));
 				displayContent(buttonsClicked);
 			}
+		 } 
+		//else if (buttons[i].classList.contains('decimal')) {
+		// 	//takes . input
+		// 	if (typeof buttonsClicked[buttonsClicked.length - 1] === 'number') {
+		// 		numbersArray[numbersArray.length - 1] = Number(
+		// 			String(numbersArray[numbersArray.length - 1]) + buttons[i].textContent
+		// 		);
+		// 		buttonsClicked[buttonsClicked.length - 1] = Number(
+		// 			String(buttonsClicked[buttonsClicked.length - 1]) + buttons[i].textContent
+		// 		);
+		// 		displayContent(buttonsClicked);
+		// 	} 
+		// } 
+		else if (buttons[i].classList.contains('operator')) {
 			//takes operator inputs
-		} else if (buttons[i].classList.contains('operator')) {
 			operatorArray.push(buttons[i].textContent);
 			buttonsClicked.push(buttons[i].textContent);
 			displayContent(buttonsClicked);
