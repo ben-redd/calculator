@@ -1,6 +1,11 @@
 body {
 	height: 100vh;
-	background-image: url(https://images.unsplash.com/photo-1510070009289-b5bc34383727?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80);
+	background: url(https://images.unsplash.com/photo-1510070009289-b5bc34383727?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80)
+		no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
 }
 button {
 	height: 100px;
@@ -83,8 +88,30 @@ button:hover {
 	grid-column: 3 / 5;
 	border-radius: 2%/4%;
 }
+#footer {
+	background-color: none;
+	padding: 0 20px;
+	/* Grid settings for the footer */
+	display: grid;
+	grid-template-columns: 1fr 1fr 10fr;
+	grid-template-rows: 50px;
+	grid-template-areas: "advertising business howSearchWorks . privacy terms settings";
+	justify-items: center;
+	align-items: center;
+	grid-gap: 20px;
+	/* sticks the footer to the bottom */
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
 
-@media only screen and (max-height: 900px) {
+#linkedin img {
+	height: 32px;
+	color: gray;
+}
+
+@media only screen and (max-width: 500px) {
 	body {
 		background-color: black;
 		vertical-align: middle;
@@ -98,5 +125,9 @@ button:hover {
 	button {
 		height: 100%;
 		width: 100%;
+	}
+	#footer {
+		grid-template-columns: 1fr 1fr;
+		grid-gap: 0;
 	}
 }
