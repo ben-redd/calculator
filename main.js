@@ -1,11 +1,4 @@
-//[x]Fix the calculator so it can take multi-digit number inputs such as "35", "200", etc;
-//[x]Round answers with long decimals to fit on the screen
-//[x]Add a "." button so users can input decimal numbers
-//[x]Add a backspace button so users can undo a miss click without clearing the entire display
-//[x]Add Keyboard support (only if I'm really feeling adventurous)
-//[x]Make it look good
-//[] change display of NaN to ERROR when a number with multiple decimals is entered
-
+//adds event listeners for button support
 const buttons = document.querySelectorAll('button');
 let inputArr = [];
 let numberCalculations; //this variable contains two arrays numberCalculations[0] contains all combined number inputs and numberCalculations[1] contains all operator inputs
@@ -21,11 +14,12 @@ for (let i = 0; i < buttons.length; i++) {
 			inputArr.pop();
 			displayInputs(inputArr);
 		} else if (buttons[i].textContent === '=') {
-			numberCalculations = combineInputs(inputArr);
-			let calculated = operate(numberCalculations[1], numberCalculations[0]);
+			let calculated = calcFromPostFix(shunting(combineInputs(inputArr)));
 			inputArr = [];
+			//for if there is an error with a string message
 			if (typeof calculated == 'string') {
 				inputArr.push(calculated);
+				//if things have gone according to plan and a number output needs to be pushed to the display
 			} else {
 				inputArr.push(round(calculated, 4));
 			}
@@ -33,6 +27,7 @@ for (let i = 0; i < buttons.length; i++) {
 		}
 	});
 }
+//adds event listeners for keyboard support
 document.addEventListener('keydown', (event) => {
 	if (
 		event.key === '+' ||
@@ -64,8 +59,7 @@ document.addEventListener('keydown', (event) => {
 		inputArr = [];
 		displayInputs(inputArr);
 	} else if (event.key === 'Enter') {
-		numberCalculations = combineInputs(inputArr);
-		let calculated = operate(numberCalculations[1], numberCalculations[0]);
+		let calculated = calcFromPostFix(shunting(combineInputs(inputArr)));
 		inputArr = [];
 		if (typeof calculated == 'string') {
 			inputArr.push(calculated);
@@ -98,51 +92,30 @@ function round(value, decimals) {
 	} else return Number(value);
 }
 
-function operate(operators, numbers) {
-	if (operators.length + 1 != numbers.length) {
-		return 'ERROR';
-	}
-	const firstNum = numbers[0];
-	for (let i = 0; i < operators.length; i++) {
-		let updatedNum;
-		if (operators[i] === '+') {
-			updatedNum = addition(numbers[0], numbers[1]);
-			numbers.splice(0, 2, updatedNum);
-		} else if (operators[i] === '-') {
-			updatedNum = subtraction(numbers[0], numbers[1]);
-			numbers.splice(0, 2, updatedNum);
-		} else if (operators[i] === '×') {
-			updatedNum = multiplication(numbers[0], numbers[1]);
-			numbers.splice(0, 2, updatedNum);
-		} else if (operators[i] === '÷') {
-			if (numbers[1] == 0) {
-				return 'DIVIDE BY "0" ERROR';
-			}
-			updatedNum = division(numbers[0], numbers[1]);
-			numbers.splice(0, 2, updatedNum);
-		}
-	}
-	return numbers[0];
-}
-
 //combines multiple inputs to make up larger numbers and returns the combined array
 function combineInputs(inputs) {
 	let combinedNumArr = [];
-	let operatorArr = [];
 	let startJoin = 0;
+	let numberOfNums = 0;
+	let numberOfOperators = 0;
 	for (let i = 0; i < inputs.length; i++) {
 		if (inputs[i] === '+' || inputs[i] === '-' || inputs[i] === '×' || inputs[i] === '÷') {
 			let nextElement = inputs.slice(startJoin, i).join('');
 			combinedNumArr.push(Number(nextElement));
+			combinedNumArr.push(inputs[i]);
 			startJoin = i + 1;
-			operatorArr.push(inputs[i]);
+			numberOfNums += 1;
+			numberOfOperators += 1;
 		} else if (i === inputs.length - 1) {
 			let lastElement = inputs.slice(startJoin, i + 1).join('');
 			combinedNumArr.push(Number(lastElement));
+			numberOfNums += 1;
 		}
 	}
-	let finalArr = [ combinedNumArr, operatorArr ];
-	return finalArr;
+	if (numberOfNums <= numberOfOperators) {
+		return 'ERROR';
+	}
+	return combinedNumArr;
 }
 
 function displayInputs(inputs) {
@@ -156,4 +129,106 @@ function displayInputs(inputs) {
 		}
 	}
 	display.placeholder = text;
+}
+
+//shunting yard algorithm. Takes an array of inputs in infix notation and converts it to postfix notation
+function shunting(infix) {
+	let postfix = [];
+	let operatorStack = [];
+	let lastElement;
+	for (let i = 0; i < infix.length; i++) {
+		if (typeof infix[i] == 'number') {
+			//numbers are immediately pushed into the postfix array
+			postfix.push(infix[i]);
+		} else {
+			if (operatorStack.length === 0) {
+				operatorStack.push(infix[i]); //the first operator is always pushed into the operatorStack
+			} else {
+				//if there are already operators in the stack we need to compare them so they can be put in order of precedence
+				lastElement = operatorStack.length - 1;
+				if (
+					//if what is in the stack is of greater precedence, push it into the postfix array and pop it out of the operator stack
+					(infix[i] === '+' || infix[i] === '-') &&
+					(operatorStack[lastElement] === '×' || operatorStack[lastElement] === '÷')
+				) {
+					postfix.push(operatorStack.pop());
+					if (operatorStack.length > 0) {
+						lastElement = operatorStack.length - 1;
+						if (operatorStack[lastElement] === '+' || operatorStack[lastElement] === '-') {
+							postfix.push(operatorStack.pop());
+						}
+					}
+					operatorStack.push(infix[i]);
+				} else if (
+					//if what is in the stack is of equal precedence, push it into the postfix array and pop it out of the operator stack
+					(infix[i] === '+' || infix[i] === '-') &&
+					(operatorStack[lastElement] === '+' || operatorStack[lastElement] === '-')
+				) {
+					postfix.push(operatorStack.pop());
+					if (operatorStack.length > 0) {
+						lastElement = operatorStack.length - 1;
+						if (operatorStack[lastElement] === '+' || operatorStack[lastElement] === '-') {
+							postfix.push(operatorStack.pop());
+						}
+					}
+					operatorStack.push(infix[i]);
+				} else if (
+					//if what is in the stack is of equal precedence, push it into the postfix array and pop it out of the operator stack
+					(infix[i] === '×' || infix[i] === '÷') &&
+					(operatorStack[lastElement] === '×' || operatorStack[lastElement] === '÷')
+				) {
+					postfix.push(operatorStack.pop());
+					if (operatorStack.length > 0) {
+						lastElement = operatorStack.length - 1;
+						if (operatorStack[lastElement] === '×' || operatorStack[lastElement] === '÷') {
+							postfix.push(operatorStack.pop());
+						}
+					}
+					operatorStack.push(infix[i]);
+				} else if (
+					//if what is in the stack is of lesser precedence, push the new operator into the operator stack
+					(infix[i] === '×' || infix[i] === '÷') &&
+					(operatorStack[lastElement] === '+' || operatorStack[lastElement] === '-')
+				) {
+					operatorStack.push(infix[i]);
+				}
+			}
+		}
+	}
+	while (operatorStack.length > 0) {
+		//pushes the remaining elements of the operator stack into the postfix array
+		postfix.push(operatorStack.pop());
+	}
+	return postfix;
+}
+
+//calculates the value of the arithmetic from postfix notation
+function calcFromPostFix(postfix) {
+	let numberStack = [];
+	for (let i = 0; i < postfix.length; i++) {
+		if (typeof postfix[i] === 'number') {
+			numberStack.push(postfix[i]);
+		} else {
+			let num2 = numberStack.pop();
+			let num1 = numberStack.pop();
+			if (typeof num1 !== 'number' || typeof num2 !== 'number') {
+				return 'ERROR';
+			} else if (postfix[i] === '+') {
+				numberStack.push(addition(num1, num2));
+			} else if (postfix[i] === '-') {
+				numberStack.push(subtraction(num1, num2));
+			} else if (postfix[i] === '×') {
+				numberStack.push(multiplication(num1, num2));
+			} else if (postfix[i] === '÷') {
+				if (num2 === 0) {
+					return 'DIVIDE BY "0" ERROR';
+				}
+				numberStack.push(division(num1, num2));
+			}
+		}
+	}
+	if (isNaN(numberStack[0])) {
+		return 'ERROR';
+	}
+	return numberStack[0];
 }
