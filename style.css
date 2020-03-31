@@ -40,8 +40,7 @@ button:hover {
 	padding: 2%;
 	border-radius: 3%;
 	background-color: #005f5f;
-	/* background: -webkit-gradient(linear, left top, left bottom, from(#808080), to(#5c5a5c));
-	background: linear-gradient(top, #808080 0%, #5c5a5c); */
+	margin-bottom: 15%;
 }
 
 #display {
