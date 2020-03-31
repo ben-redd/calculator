@@ -128,7 +128,7 @@ function displayInputs(inputs) {
 			text = text + inputs[i];
 		}
 	}
-	display.placeholder = text;
+	display.textContent = text;
 }
 
 //shunting yard algorithm. Takes an array of inputs in infix notation and converts it to postfix notation
