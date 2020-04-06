@@ -1,5 +1,5 @@
 //adds event listeners for button support
-const buttons = document.querySelectorAll('button');
+const buttons = document.querySelectorAll('button:not(#display)');
 let inputArr = [];
 let numberCalculations; //this variable contains two arrays numberCalculations[0] contains all combined number inputs and numberCalculations[1] contains all operator inputs
 for (let i = 0; i < buttons.length; i++) {

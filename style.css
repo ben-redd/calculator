@@ -24,7 +24,7 @@ button:hover {
 	box-shadow: 0 0 2pt 1pt #111;
 }
 
-#container {
+#calculator {
 	position: absolute;
 	top: 50%;
 	left: 50%;
