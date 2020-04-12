@@ -62,14 +62,13 @@ button:hover {
 	font-size: 100%;
 	box-shadow: 0 0 2pt 1pt #111;
 }
-.operator {
+.operatorButtons {
 	background-color: #606de4;
 }
-.number {
+.numberButtons {
 	background-color: #d3d3d3;
 }
-#backspace,
-#clear {
+.deletions {
 	background-color: #c76843;
 }
 
@@ -98,6 +97,7 @@ footer {
 
 @media only screen and (max-width: 750px) {
 	#calculator {
+		margin: auto;
 		grid-gap: 2%;
 		width: 70vw;
 		height: 93vw;
@@ -112,6 +112,7 @@ footer {
 		vertical-align: auto;
 	}
 	#calculator {
+		margin: auto;
 		grid-gap: 1%;
 		height: 120vw;
 		width: 90vw;

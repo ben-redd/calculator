@@ -1,19 +1,20 @@
 //adds event listeners for button support
-const buttons = document.querySelectorAll('button:not(#display)');
+//const buttons = document.querySelectorAll('button:not(#display)');
+const digits = document.querySelectorAll('.numberButtons');
+const operators = document.querySelectorAll('.operatorButtons');
+const deletions = document.querySelectorAll('.deletions');
 let inputArr = [];
 let numberCalculations; //this variable contains two arrays numberCalculations[0] contains all combined number inputs and numberCalculations[1] contains all operator inputs
-for (let i = 0; i < buttons.length; i++) {
-	buttons[i].addEventListener('click', () => {
-		if (buttons[i].textContent !== '=' && buttons[i].textContent !== 'C' && buttons[i].textContent !== '⌫') {
-			inputArr.push(buttons[i].textContent);
-			displayInputs(inputArr);
-		} else if (buttons[i].textContent === 'C') {
-			inputArr = [];
-			displayInputs(inputArr);
-		} else if (buttons[i].textContent === '⌫') {
-			inputArr.pop();
-			displayInputs(inputArr);
-		} else if (buttons[i].textContent === '=') {
+
+for (let i = 0; i < digits.length; i++) {
+	digits[i].addEventListener('click', () => {
+		inputArr.push(digits[i].dataset.digit);
+		displayInputs(inputArr);
+	});
+}
+for (let i = 0; i < operators.length; i++) {
+	operators[i].addEventListener('click', () => {
+		if (operators[i].dataset.operator === '=') {
 			let calculated = calcFromPostFix(shunting(combineInputs(inputArr)));
 			inputArr = [];
 			//for if there is an error with a string message
@@ -24,9 +25,50 @@ for (let i = 0; i < buttons.length; i++) {
 				inputArr.push(round(calculated, 4));
 			}
 			displayInputs(inputArr);
+		} else {
+			inputArr.push(operators[i].dataset.operator);
+			displayInputs(inputArr);
 		}
 	});
 }
+for (let i = 0; i < deletions.length; i++) {
+	deletions[i].addEventListener('click', () => {
+		if (deletions[i].dataset.deleter === 'clear') {
+			inputArr = [];
+			displayInputs(inputArr);
+		} else {
+			inputArr.pop();
+			displayInputs(inputArr);
+		}
+	});
+}
+
+//OLD CODE USING TEXTCONTENT
+// for (let i = 0; i < buttons.length; i++) {
+// 	buttons[i].addEventListener('click', () => {
+// 		if (buttons[i].textContent !== '=' && buttons[i].textContent !== 'C' && buttons[i].textContent !== '⌫') {
+// 			inputArr.push(buttons[i].textContent);
+// 			displayInputs(inputArr);
+// 		} else if (buttons[i].textContent === 'C') {
+// 			inputArr = [];
+// 			displayInputs(inputArr);
+// 		} else if (buttons[i].textContent === '⌫') {
+// 			inputArr.pop();
+// 			displayInputs(inputArr);
+// 		} else if (buttons[i].textContent === '=') {
+// 			let calculated = calcFromPostFix(shunting(combineInputs(inputArr)));
+// 			inputArr = [];
+// 			//for if there is an error with a string message
+// 			if (typeof calculated == 'string') {
+// 				inputArr.push(calculated);
+// 				//if things have gone according to plan and a number output needs to be pushed to the display
+// 			} else {
+// 				inputArr.push(round(calculated, 4));
+// 			}
+// 			displayInputs(inputArr);
+// 		}
+// 	});
+// }
 //adds event listeners for keyboard support
 document.addEventListener('keydown', (event) => {
 	if (
