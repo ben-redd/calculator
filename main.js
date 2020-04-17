@@ -80,8 +80,10 @@ for (let i = 0; i < deletions.length; i++) {
 
 //makes sure you can't type two operators in a row or two decimals in a row. e.g. 3 + - 5, or 3..45
 function validate(key) {
-	let operators = [ '+', '-', '*', '×', '/', '÷', '.' ];
-	if (operators.includes(inputArr[inputArr.length - 1]) && operators.includes(key)) {
+	let operators = [ '+', '-', '×', '÷', '.' ];
+	if (inputArr.length === 0 && (key === '÷' || key === '×')) {
+		return false;
+	} else if (operators.includes(inputArr[inputArr.length - 1]) && operators.includes(key)) {
 		return false;
 	}
 	return true;
@@ -151,7 +153,8 @@ function division(num1, num2) {
 function round(value, decimals) {
 	if (String(value).includes('.') && String(value).split('.')[1].length > 3) {
 		return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
-	} else return Number(value);
+	}
+	return Number(value);
 }
 
 //combines multiple inputs to make up larger numbers and returns the combined array
