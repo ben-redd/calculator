@@ -17,6 +17,8 @@ button {
 	border-radius: 4%;
 	border: 1px solid black;
 	cursor: pointer;
+	transition: font-size .1s;
+	transition: box-shadow .1s;
 }
 button:hover {
 	font-size: 100%;

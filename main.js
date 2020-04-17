@@ -1,3 +1,5 @@
+// [] Bug: press 3 with the mouse, then with the keyboard type + 54. Gives the value 573
+
 //adds event listeners for button support
 //const buttons = document.querySelectorAll('button:not(#display)');
 const digits = document.querySelectorAll('.numberButtons');
@@ -7,14 +9,17 @@ let inputArr = [];
 let numberCalculations; //this variable contains two arrays numberCalculations[0] contains all combined number inputs and numberCalculations[1] contains all operator inputs
 
 for (let i = 0; i < digits.length; i++) {
-	digits[i].addEventListener('click', () => {
-		inputArr.push(digits[i].dataset.digit);
-		displayInputs(inputArr);
+	digits[i].addEventListener('click', (e) => {
+		if (validate(e.target.dataset.digit)) {
+			inputArr.push(e.target.dataset.digit);
+			displayInputs(inputArr);
+			console.log(inputArr);
+		}
 	});
 }
 for (let i = 0; i < operators.length; i++) {
-	operators[i].addEventListener('click', () => {
-		if (operators[i].dataset.operator === '=') {
+	operators[i].addEventListener('click', (e) => {
+		if (e.target.dataset.operator === '=') {
 			let calculated = calcFromPostFix(shunting(combineInputs(inputArr)));
 			inputArr = [];
 			//for if there is an error with a string message
@@ -26,14 +31,17 @@ for (let i = 0; i < operators.length; i++) {
 			}
 			displayInputs(inputArr);
 		} else {
-			inputArr.push(operators[i].dataset.operator);
-			displayInputs(inputArr);
+			if (validate(operators[i].dataset.operator)) {
+				inputArr.push(operators[i].dataset.operator);
+				displayInputs(inputArr);
+				console.log(inputArr);
+			}
 		}
 	});
 }
 for (let i = 0; i < deletions.length; i++) {
-	deletions[i].addEventListener('click', () => {
-		if (deletions[i].dataset.deleter === 'clear') {
+	deletions[i].addEventListener('click', (e) => {
+		if (e.target.dataset.deleter === 'clear') {
 			inputArr = [];
 			displayInputs(inputArr);
 		} else {
@@ -69,12 +77,21 @@ for (let i = 0; i < deletions.length; i++) {
 // 		}
 // 	});
 // }
+
+//makes sure you can't type two operators in a row or two decimals in a row. e.g. 3 + - 5, or 3..45
+function validate(key) {
+	let operators = [ '+', '-', '*', '×', '/', '÷', '.' ];
+	if (operators.includes(inputArr[inputArr.length - 1]) && operators.includes(key)) {
+		return false;
+	}
+	return true;
+}
 //adds event listeners for keyboard support
 document.addEventListener('keydown', (event) => {
 	if (
-		event.key === '+' ||
-		event.key === '-' ||
-		event.key === '.' ||
+		(event.key === '+' && validate(event.key)) ||
+		(event.key === '-' && validate(event.key)) ||
+		(event.key === '.' && validate(event.key)) ||
 		event.key === '0' ||
 		event.key === '1' ||
 		event.key === '2' ||
@@ -88,12 +105,15 @@ document.addEventListener('keydown', (event) => {
 	) {
 		inputArr.push(String(event.key));
 		displayInputs(inputArr);
-	} else if (event.key === '*') {
+		console.log(inputArr);
+	} else if (event.key === '*' && validate('×')) {
 		inputArr.push('×');
 		displayInputs(inputArr);
-	} else if (event.key === '/') {
+		console.log(inputArr);
+	} else if (event.key === '/' && validate('÷')) {
 		inputArr.push('÷');
 		displayInputs(inputArr);
+		console.log(inputArr);
 	} else if (event.key === 'Backspace') {
 		inputArr.pop();
 		displayInputs(inputArr);
