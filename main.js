@@ -8,6 +8,14 @@ const deletions = document.querySelectorAll('.deletions');
 let inputArr = [];
 let numberCalculations; //this variable contains two arrays numberCalculations[0] contains all combined number inputs and numberCalculations[1] contains all operator inputs
 
+//prevents focusing bugs
+document.addEventListener('mousedown', (e) => {
+	if (e.target.matches('button')) {
+		e.preventDefault();
+	}
+});
+
+//adds mouse event listeners for digits
 for (let i = 0; i < digits.length; i++) {
 	digits[i].addEventListener('click', (e) => {
 		if (validate(e.target.dataset.digit)) {
@@ -17,6 +25,7 @@ for (let i = 0; i < digits.length; i++) {
 		}
 	});
 }
+//adds mouse event listeners for operators
 for (let i = 0; i < operators.length; i++) {
 	operators[i].addEventListener('click', (e) => {
 		if (e.target.dataset.operator === '=') {
@@ -39,6 +48,7 @@ for (let i = 0; i < operators.length; i++) {
 		}
 	});
 }
+//adds mouse event listeners for deletions (clear and backspace)
 for (let i = 0; i < deletions.length; i++) {
 	deletions[i].addEventListener('click', (e) => {
 		if (e.target.dataset.deleter === 'clear') {
@@ -51,41 +61,16 @@ for (let i = 0; i < deletions.length; i++) {
 	});
 }
 
-//OLD CODE USING TEXTCONTENT
-// for (let i = 0; i < buttons.length; i++) {
-// 	buttons[i].addEventListener('click', () => {
-// 		if (buttons[i].textContent !== '=' && buttons[i].textContent !== 'C' && buttons[i].textContent !== '⌫') {
-// 			inputArr.push(buttons[i].textContent);
-// 			displayInputs(inputArr);
-// 		} else if (buttons[i].textContent === 'C') {
-// 			inputArr = [];
-// 			displayInputs(inputArr);
-// 		} else if (buttons[i].textContent === '⌫') {
-// 			inputArr.pop();
-// 			displayInputs(inputArr);
-// 		} else if (buttons[i].textContent === '=') {
-// 			let calculated = calcFromPostFix(shunting(combineInputs(inputArr)));
-// 			inputArr = [];
-// 			//for if there is an error with a string message
-// 			if (typeof calculated == 'string') {
-// 				inputArr.push(calculated);
-// 				//if things have gone according to plan and a number output needs to be pushed to the display
-// 			} else {
-// 				inputArr.push(round(calculated, 4));
-// 			}
-// 			displayInputs(inputArr);
-// 		}
-// 	});
-// }
-
 //makes sure you can't type two operators in a row or two decimals in a row. e.g. 3 + - 5, or 3..45
 function validate(key) {
 	let operators = [ '+', '-', '×', '÷', '.' ];
 	if (inputArr.length === 0 && (key === '÷' || key === '×')) {
 		return false;
-	} else if (operators.includes(inputArr[inputArr.length - 1]) && operators.includes(key)) {
+	}
+	if (operators.includes(inputArr[inputArr.length - 1]) && operators.includes(key)) {
 		return false;
 	}
+
 	return true;
 }
 //adds event listeners for keyboard support
